@@ -7,7 +7,7 @@ class soclet(Thread):
 		Thread.__init__(self)
 		self.host = ""
 		self.port = 25565
-		self.mdp = ""
+		self.mdp = "Your_password"
 		self.client_mdp = []
 		self.client_co = []
 		
@@ -19,11 +19,11 @@ class soclet(Thread):
 			asks, wlist, rlist = select.select([self.main_co], [], [], 0)
 			for ask in asks:
 				client_nom, infos = ask.accept()
-				self.client_co.append(client_nom)
+				self.client_mdp.append(client_nom)
 				print("[*]Connected to " + str(infos[0]) + "\n")
 				
 			try:
-				ask_mdp, wlist, rlist = select.select(self.client_co, [], [], 0.05)
+				ask_mdp, wlist, rlist = select.select(self.client_mdp, [], [], 0.05)
 			except:
 				pass
 			for asker_mdp in ask_mdp:
@@ -32,6 +32,8 @@ class soclet(Thread):
 				if mdp == self.mdp:
 					client_co.append(asker_mdp)
 					client_co.remove(asker_mdp)
+				else:
+					asker_mdp.send(b"[*]Try Again")
 				
 			try:
 				atts, wlist, rlist = select.select(self.client_co, [], [], 0.05)
