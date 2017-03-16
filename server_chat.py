@@ -19,13 +19,14 @@ class soclet(Thread):
 				client_nom, infos = ask.accept()
 				self.client_co.append(client_nom)
 				print("[*]Connected to " + str(infos[0]) + "\n")
-			
 			try:
 				atts, wlist, rlist = select.select(self.client_co, [], [], 0.05)
 			except select.error:
 				pass
 			else:
 				for att in atts:
+					print(att)
+					print(self.client_co)
 					try:
 						msg = att.recv(9999)
 					except ConnectionResetError:
@@ -36,6 +37,8 @@ class soclet(Thread):
 							co.send(msg)
 						except ConnectionResetError:
 							del self.client_co[i]
+						except:
+							pass
 						i = i + 1
 
 
