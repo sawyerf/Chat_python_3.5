@@ -7,8 +7,8 @@ import sys
 class server(Thread):
 	def __init__(self):
 		Thread.__init__(self)
-		self.pseudo="AlaeRoport"
-		self.host="localhost"
+		self.pseudo="Your_name"
+		self.host="Your_ip"
 		self.port=25565
 	
 	def run(self):
