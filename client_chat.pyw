@@ -7,8 +7,8 @@ import sys
 class server(Thread):
 	def __init__(self):
 		Thread.__init__(self)
-		self.pseudo="Your_pseudo"
-		self.host="Your_ip"
+		self.pseudo="AlaeRoport"
+		self.host="localhost"
 		self.port=25565
 		self.confirm=False
 	
@@ -37,7 +37,7 @@ class server(Thread):
 				chat.insert(END, "[*]Deconnected To Server\n")
 				break
 			msg = msg.decode()
-			if msg == "[*]Confirm":
+			if msg == "[*]Confirm\n":
 				self.confirm = True
 			chat.insert(END, msg)
 			chat.see("end")
@@ -45,7 +45,7 @@ class server(Thread):
 	def recup_msg(self):
 		msg = msg_send.get()
 		if msg != '':
-			if self.confirm:
+			if self.confirm == True:
 				msg = self.pseudo + " > " + msg + "\n"
 			else:
 				pass
