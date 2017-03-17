@@ -15,6 +15,7 @@ class soclet(Thread):
 		self.main_co = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.main_co.bind((self.host, self.port))
 		self.main_co.listen(5)
+		ask_mdp = []
 		while True:
 			asks, wlist, rlist = select.select([self.main_co], [], [], 0)
 			for ask in asks:
@@ -27,14 +28,17 @@ class soclet(Thread):
 			except:
 				pass
 			for asker_mdp in ask_mdp:
-				mdp = asker_mdp.recv(9999)
+				try:
+					mdp = asker_mdp.recv(9999)
+				except:
+					pass
 				mdp = mdp.decode()
 				if mdp == self.mdp:
-					asker_mdp.send(b"[*]Welcome To The Server")
-					client_co.append(asker_mdp)
-					client_co.remove(asker_mdp)
+					asker_mdp.send(b"[*]Welcome To The Server\n")
+					self.client_co.append(asker_mdp)
+					self.client_mdp.remove(asker_mdp)
 				else:
-					asker_mdp.send(b"[*]Try Again")
+					asker_mdp.send(b"[*]Try Again\n")
 				
 			try:
 				atts, wlist, rlist = select.select(self.client_co, [], [], 0.05)
