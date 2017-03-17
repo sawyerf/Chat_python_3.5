@@ -27,18 +27,20 @@ class soclet(Thread):
 				ask_mdp, wlist, rlist = select.select(self.client_mdp, [], [], 0.05)
 			except:
 				pass
-			for asker_mdp in ask_mdp:
-				try:
-					mdp = asker_mdp.recv(9999)
-				except:
-					pass
-				mdp = mdp.decode()
-				if mdp == self.mdp:
-					asker_mdp.send(b"[*]Welcome To The Server\n")
-					self.client_co.append(asker_mdp)
-					self.client_mdp.remove(asker_mdp)
-				else:
-					asker_mdp.send(b"[*]Try Again\n")
+			else:
+				for asker_mdp in ask_mdp:
+					try:
+						mdp = asker_mdp.recv(9999)
+					except:
+						pass
+					mdp = mdp.decode()
+					if mdp == self.mdp:
+						asker_mdp.send(b"[*]Confirm\n")
+						asker_mdp.send(b"[*]Welcome To The Server\n")
+						self.client_co.append(asker_mdp)
+						self.client_mdp.remove(asker_mdp)
+					else:
+						asker_mdp.send(b"[*]Try Again\n")
 				
 			try:
 				atts, wlist, rlist = select.select(self.client_co, [], [], 0.05)
@@ -46,8 +48,6 @@ class soclet(Thread):
 				pass
 			else:
 				for att in atts:
-					print(att)
-					print(self.client_co)
 					try:
 						msg = att.recv(9999)
 					except ConnectionResetError:
