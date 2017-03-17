@@ -30,6 +30,7 @@ class soclet(Thread):
 				mdp = asker_mdp.recv(9999)
 				mdp = mdp.decode()
 				if mdp == self.mdp:
+					asker_mdp.send(b"[*]Welcome To The Server")
 					client_co.append(asker_mdp)
 					client_co.remove(asker_mdp)
 				else:
