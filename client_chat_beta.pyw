@@ -4,7 +4,7 @@ import socket
 import sys
 
 
-class server(Thread):
+class Server(Thread):
 	def __init__(self):
 		Thread.__init__(self)
 		self.pseudo=""
@@ -54,8 +54,7 @@ class server(Thread):
 				pass
 			self.main_co.send(msg.encode())
 			msg_send.delete(0, END)
-			
-			
+				
 	def confirm_profil(self):
 		self.host = thread2.ip_entry.get()
 		self.pseudo = thread2.pseudo_entry.get()
@@ -73,8 +72,8 @@ class profil(Thread):
 		self.ip_entry = Entry(self.main_profil, width=34)
 		self.pseudo_label = Label(self.main_profil, text="Pseudo:")
 		self.pseudo_entry = Entry(self.main_profil, width=34)
-		self.valid_button = Button(self.main_profil, text="Confirm", command=thread1.confirm_profil)
-		self.cancel_button = Button(self.main_profil, text="Cancel", command=self.main_profil.quit)
+		self.valid_button = Button(self.main_profil, text="Confirm", command=server.confirm_profil, width=11)
+		self.cancel_button = Button(self.main_profil, text="Cancel", command=self.main_profil.quit, width=11)
 		#--------------------------PACK-------------------------#
 		self.ip_label.pack(side=TOP)
 		self.ip_entry.pack(side=TOP, padx=15)
@@ -84,12 +83,12 @@ class profil(Thread):
 		self.cancel_button.pack(side=LEFT, padx=15, pady=5)
 		self.main_profil.mainloop()
 
-thread1 = server()
+server = Server()
 #------------------------------GRAPHIC INTERFACE-----------------------------#
 main = Tk()
 chat = Text(main)
-msg_send = Entry(main, width = 90)
-send = Button(main, text="Send", command=thread1.recup_msg)
+msg_send = Entry(main, width=92)
+send = Button(main, text="Send", command=server.recup_msg, width=10, height=1)
 scrollbar = Scrollbar(main, command=chat.yview, cursor="heart")
 #-----------------------------MENUBAR-----------------------------#
 menubar = Menu(main)
@@ -106,7 +105,7 @@ send.pack(side=RIGHT, padx=5, pady=1)
 
 thread2 = profil()
 thread2.start()
-thread1.start()
+server.start()
 
 main.mainloop()
 sys.exit(0)
