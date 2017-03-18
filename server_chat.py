@@ -21,7 +21,7 @@ class soclet(Thread):
 			for ask in asks:
 				client_nom, infos = ask.accept()
 				self.client_mdp.append(client_nom)
-				print("[*]Connected to " + str(infos[0]) + "\n")
+				print("[*]Connected to " + str(infos[0]))
 				
 			try:
 				ask_mdp, wlist, rlist = select.select(self.client_mdp, [], [], 0.05)
@@ -64,5 +64,6 @@ class soclet(Thread):
 
 
 print("[*]Server Start\n")
+print("Your Ip Is " + socket.gethostbyname(socket.gethostname()))
 thread1 = soclet()
 thread1.start()
