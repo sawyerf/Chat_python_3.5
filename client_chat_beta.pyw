@@ -13,16 +13,17 @@ class Server(Thread):
 		self.confirm=False
 	
 	def run(self):
-		
 		condition = True
-		thread2.join()
-		
+		profil.join()
 		while condition:
 			try:
 				self.main_co = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				self.main_co.connect((self.host, self.port))
 			except ConnectionRefusedError:
 				chat.insert(END, "[*]No Server\n")
+				pass
+			except:
+				chat.insert(END, "[*]Error Server")
 				pass
 			else:
 				chat.insert(END, "[*]Connected To Server\n")
@@ -56,12 +57,12 @@ class Server(Thread):
 			msg_send.delete(0, END)
 				
 	def confirm_profil(self):
-		self.host = thread2.ip_entry.get()
-		self.pseudo = thread2.pseudo_entry.get()
+		self.host = profil.ip_entry.get()
+		self.pseudo = profil.pseudo_entry.get()
 		if self.host!="" and self.pseudo!="":
-			thread2.main_profil.quit()
+			profil.main_profil.quit()
 	
-class profil(Thread):	
+class Profil(Thread):
 	def __init__(self):
 		Thread.__init__(self)
 		
@@ -83,7 +84,13 @@ class profil(Thread):
 		self.cancel_button.pack(side=LEFT, padx=15, pady=5)
 		self.main_profil.mainloop()
 
+def profil_run():
+	profil = Profil()
+	profil.start()
+	
+
 server = Server()
+profil = Profil()
 #------------------------------GRAPHIC INTERFACE-----------------------------#
 main = Tk()
 chat = Text(main)
@@ -93,7 +100,7 @@ scrollbar = Scrollbar(main, command=chat.yview, cursor="heart")
 #-----------------------------MENUBAR-----------------------------#
 menubar = Menu(main)
 menu1 = Menu(menubar, tearoff=0)
-menu1.add_command(label="Connect", command=main.quit)
+menu1.add_command(label="Connect", command=profil_run)
 menu1.add_command(label="Quitter", command=main.quit)
 menubar.add_cascade(label="Main", menu=menu1)
 main.config(menu=menubar)
@@ -103,8 +110,7 @@ chat.pack(side=TOP, padx=5, pady=1)
 msg_send.pack(side=LEFT, padx=5, pady=1)
 send.pack(side=RIGHT, padx=5, pady=1)
 
-thread2 = profil()
-thread2.start()
+profil.start()
 server.start()
 
 main.mainloop()
