@@ -46,7 +46,7 @@ class Server(Thread):
 			chat.insert(END, msg)
 			chat.see("end")
 	
-	def recup_msg(self):
+	def recup_msg(self, enter):
 		msg = msg_send.get()
 		if msg != '':
 			if self.confirm == True:
@@ -97,6 +97,7 @@ chat = Text(main)
 msg_send = Entry(main, width=92)
 send = Button(main, text="Send", command=server.recup_msg, width=10, height=1)
 scrollbar = Scrollbar(main, command=chat.yview, cursor="heart")
+main.bind("<Return>", server.recup_msg)
 #-----------------------------MENUBAR-----------------------------#
 menubar = Menu(main)
 menu1 = Menu(menubar, tearoff=0)
