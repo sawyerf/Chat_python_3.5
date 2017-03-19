@@ -60,7 +60,7 @@ class Server(Thread):
 		self.host = profil.ip_entry.get()
 		self.pseudo = profil.pseudo_entry.get()
 		if self.host!="" and self.pseudo!="":
-			profil.main_profil.quit()
+			profil.main_profil.destroy()
 	
 class Profil(Thread):
 	def __init__(self):
