@@ -2,7 +2,7 @@ import select
 import socket
 from threading import Thread
 
-class soclet(Thread):
+class Server(Thread):
 	def __init__(self):
 		Thread.__init__(self)
 		self.host = ""
@@ -71,5 +71,5 @@ class soclet(Thread):
 
 print("[*]Server Start\n")
 print("Your Ip Is " + socket.gethostbyname(socket.gethostname()))
-thread1 = soclet()
-thread1.start()
+server = Server()
+server.start()
