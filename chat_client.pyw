@@ -111,6 +111,8 @@ def profil_run():
 
 server = Server()
 profil = Profil()
+profil.start()
+profil.join()
 #------------------------------GRAPHIC INTERFACE-----------------------------#
 main = Tk()
 chat = Text(main, state=NORMAL)
@@ -132,7 +134,6 @@ msg_send.pack(side=LEFT, padx=5, pady=1)
 send.pack(side=RIGHT, padx=5, pady=1)
 chat.configure(state=DISABLED)
 
-profil.start()
 server.start()
 
 main.mainloop()
