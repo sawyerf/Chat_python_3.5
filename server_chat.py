@@ -10,7 +10,7 @@ class soclet(Thread):
 		Thread.__init__(self)
 		self.host = ""
 		self.port = 25565
-		self.mdp = "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8"
+		self.mdp = "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8"		#password is "password" and is SHA-1
 		self.client_mdp = []
 		self.client_co = []
 		
