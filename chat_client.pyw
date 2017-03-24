@@ -1,3 +1,5 @@
+#Version 1.4.1
+
 from tkinter import *
 from threading import Thread
 import socket
