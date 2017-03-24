@@ -137,4 +137,4 @@ chat.configure(state=DISABLED)
 server.start()
 
 main.mainloop()
-sys.exit(0)
+main.destroy()
