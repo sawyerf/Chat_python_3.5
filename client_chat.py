@@ -43,7 +43,7 @@ class Server(Thread):
 		while self.condition:
 			msg=""
 			try:
-				msg = self.main_co.recv(99999)
+				msg = self.main_co.recv(1024)
 			except ConnectionResetError:
 				self.chat_insert("[*]Deconnected To Server\n")
 				break
