@@ -1,4 +1,4 @@
-#Version 1.4.1
+#Version 1.4.2
 
 
 import select
@@ -33,7 +33,7 @@ class soclet(Thread):
 			else:
 				for asker_mdp in ask_mdp:
 					try:
-						mdp = asker_mdp.recv(9999)
+						mdp = asker_mdp.recv(1024)
 					except:
 						pass
 					else:
