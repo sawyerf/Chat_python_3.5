@@ -1,4 +1,4 @@
-#Version 1.4.1
+#Version 1.4.2
 
 from tkinter import *
 from threading import Thread
@@ -23,6 +23,7 @@ class Server(Thread):
 			try:
 				self.main_co = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				self.main_co.connect((self.host, self.port))
+				self.main_co.settimeout(2.5)
 			except ConnectionRefusedError:
 				if self.one_error == True:
 					self.chat_insert("[*]No Server\n")
@@ -32,14 +33,15 @@ class Server(Thread):
 				if self.one_error == True:
 					self.chat_insert("[*]Error Server")
 					self.one_error = False
-				pass
+				break
 			else:
 				self.chat_insert("[*]Connected To Server\n")
+				self.recevoir()
 				break
-		self.recevoir()
 		
 	def recevoir(self):
 		while self.condition:
+			msg=""
 			try:
 				msg = self.main_co.recv(99999)
 			except ConnectionResetError:
@@ -50,14 +52,18 @@ class Server(Thread):
 				break
 			except:
 				pass
-			msg = msg.decode()
-			if msg == "[*]Confirm\n":
-				self.confirm = True
-			self.chat_insert(msg)
-			chat.see("end")
-	
+			else:
+				if msg != "":
+					msg = msg.decode()
+					if msg == "[*]Confirm\n":
+						self.confirm = True
+					self.chat_insert(msg)
+					interface.chat.see("end")
+		self.main_co.close()
+
+
 	def recup_msg(self, enter=""):
-		msg = msg_send.get()
+		msg = interface.msg_send.get()
 		if msg != '':
 			if self.confirm == True:
 				msg = self.pseudo + " > " + msg + "\n"
@@ -65,7 +71,7 @@ class Server(Thread):
 				msg = hashlib.sha1(msg.encode()).hexdigest()
 				pass
 			self.main_co.send(msg.encode())
-			msg_send.delete(0, END)
+			interface.msg_send.delete(0, END)
 				
 	def confirm_profil(self, enter=""):
 		self.host = profil.ip_entry.get()
@@ -74,9 +80,9 @@ class Server(Thread):
 			profil.main_profil.destroy()
 	
 	def chat_insert(self, msg):
-		chat.configure(state=NORMAL)
-		chat.insert(END, msg)
-		chat.configure(state=DISABLED)
+		interface.chat.configure(state=NORMAL)
+		interface.chat.insert(END, msg)
+		interface.chat.configure(state=DISABLED)
 	
 class Profil(Thread):
 	def __init__(self):
@@ -101,41 +107,43 @@ class Profil(Thread):
 		self.cancel_button.pack(side=LEFT, padx=15, pady=5)
 		self.main_profil.mainloop()
 
-def profil_run():
-	server.condition=False
-	server = Server()	
-	profil = Profil()
-	profil.start()
-	server.start()
+class Interface(Thread):
+	def __init__(self):
+		Thread.__init__(self)
+
+	def run(self):
+		#------------------------------GRAPHIC INTERFACE-----------------------------#
+		self.main = Tk()
+		self.chat = Text(self.main, state=NORMAL)
+		self.msg_send = Entry(self.main, width=92)
+		self.send = Button(self.main, text="Send", command=server.recup_msg, width=10, height=1)
+		self.scrollbar = Scrollbar(self.main, command=self.chat.yview, cursor="heart")
+		self.msg_send.bind("<Return>", server.recup_msg)
+		#-----------------------------MENUBAR-----------------------------#
+		self.menubar = Menu(self.main)
+		self.menu1 = Menu(self.menubar, tearoff=0)
+		self.menu1.add_command(label="Connect", command=self.main.quit)
+		self.menu1.add_command(label="Quitter", command=self.main.quit)
+		self.menubar.add_cascade(label="Main", menu=self.menu1)
+		self.main.config(menu=self.menubar)
+		#-----------------------------PACK-----------------------------#
+		self.scrollbar.pack(side=RIGHT,fill=Y)
+		self.chat.pack(side=TOP, padx=5, pady=1)
+		self.msg_send.pack(side=LEFT, padx=5, pady=1)
+		self.send.pack(side=RIGHT, padx=5, pady=1)
+		self.chat.configure(state=DISABLED)
+
+		server.start()
+		self.main.mainloop()
+		server.condition=False
+		sys.exit(0)
 
 	
 
 server = Server()
 profil = Profil()
+interface = Interface()
+
 profil.start()
 profil.join()
-#------------------------------GRAPHIC INTERFACE-----------------------------#
-main = Tk()
-chat = Text(main, state=NORMAL)
-msg_send = Entry(main, width=92)
-send = Button(main, text="Send", command=server.recup_msg, width=10, height=1)
-scrollbar = Scrollbar(main, command=chat.yview, cursor="heart")
-msg_send.bind("<Return>", server.recup_msg)
-#-----------------------------MENUBAR-----------------------------#
-menubar = Menu(main)
-menu1 = Menu(menubar, tearoff=0)
-menu1.add_command(label="Connect", command=profil_run)
-menu1.add_command(label="Quitter", command=main.quit)
-menubar.add_cascade(label="Main", menu=menu1)
-main.config(menu=menubar)
-#-----------------------------PACK-----------------------------#
-scrollbar.pack(side=RIGHT,fill=Y)
-chat.pack(side=TOP, padx=5, pady=1)
-msg_send.pack(side=LEFT, padx=5, pady=1)
-send.pack(side=RIGHT, padx=5, pady=1)
-chat.configure(state=DISABLED)
-
-server.start()
-
-main.mainloop()
-server.condition = False
+interface.start()
