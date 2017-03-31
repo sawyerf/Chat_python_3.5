@@ -1,4 +1,4 @@
-#Version 1.4.2
+#Version 2.0.1
 
 
 import select
@@ -13,6 +13,7 @@ class soclet(Thread):
 		self.mdp = "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8"		#password is "password" and is SHA-1
 		self.client_mdp = []
 		self.client_co = []
+		self.pseudo = dict()
 		
 	def run(self):
 		self.main_co = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -32,19 +33,23 @@ class soclet(Thread):
 				pass
 			else:
 				for asker_mdp in ask_mdp:
+					mdp = ""
 					try:
 						mdp = asker_mdp.recv(1024)
 					except:
 						pass
 					else:
-						mdp = mdp.decode()
-						if mdp == self.mdp:
-							self.send_msg(asker_mdp, b"[*]Confirm\n")
-							self.send_msg(asker_mdp, b"[*]Welcome To The Server\n")
-							self.client_co.append(asker_mdp)
-							self.client_mdp.remove(asker_mdp)
-						else:
-							self.send_msg(asker_mdp, b"[*]Try Again\n")
+						if mdp != "":
+							mdp = mdp.decode()
+							mdp_split = mdp.split(" ")
+							if mdp_split[0] == self.mdp:
+								self.send_msg(asker_mdp, b"[*]Confirm\n")
+								self.send_msg(asker_mdp, b"[*]Welcome To The Server\n")
+								self.pseudo[str(asker_mdp)] = mdp_split[1]
+								self.client_co.append(asker_mdp)
+								self.client_mdp.remove(asker_mdp)
+							else:
+								self.send_msg(asker_mdp, b"[*]Try Again\n")
 					
 			try:
 				atts, wlist, rlist = select.select(self.client_co, [], [], 0.05)
@@ -53,18 +58,21 @@ class soclet(Thread):
 			else:
 				for att in atts:
 					try:
-						msg = att.recv(9999)
+						msg = att.recv(1024)
+						msg = msg.decode()
 					except ConnectionResetError:
 						pass
-					i = 0
-					for co in self.client_co:
-						try:
-							co.send(msg)
-						except ConnectionResetError:
-							del self.client_co[i]
-						except:
-							pass
-						i = i + 1
+					else:
+						msg = self.pseudo[str(att)] + " > " + msg
+						i = 0
+						for co in self.client_co:
+							try:
+								co.send(msg.encode())
+							except ConnectionResetError:
+								del self.client_co[i]
+							except:
+								pass
+							i = i + 1
 
 	def send_msg(self, recver, msg_asend):
 		try:
