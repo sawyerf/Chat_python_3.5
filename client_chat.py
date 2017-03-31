@@ -23,7 +23,7 @@ class Server(Thread):
 			try:
 				self.main_co = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				self.main_co.connect((self.host, self.port))
-				self.main_co.settimeout(2.5)
+				self.main_co.settimeout(5)
 			except ConnectionRefusedError:
 				if self.one_error == True:
 					self.chat_insert("[*]No Server\n")
@@ -31,7 +31,7 @@ class Server(Thread):
 				pass
 			except:
 				if self.one_error == True:
-					self.chat_insert("[*]Error Server")
+					self.chat_insert("[*]Error Server\n")
 					self.one_error = False
 				break
 			else:
@@ -43,7 +43,7 @@ class Server(Thread):
 		while self.condition:
 			msg=""
 			try:
-				msg = self.main_co.recv(99999)
+				msg = self.main_co.recv(1024)
 			except ConnectionResetError:
 				self.chat_insert("[*]Deconnected To Server\n")
 				break
@@ -66,7 +66,7 @@ class Server(Thread):
 		msg = interface.msg_send.get()
 		if msg != '':
 			if self.confirm == True:
-				msg = msg + "\n"
+				msg = msg
 			else:
 				msg = hashlib.sha1(msg.encode()).hexdigest()
 				msg = msg + " " + self.pseudo
