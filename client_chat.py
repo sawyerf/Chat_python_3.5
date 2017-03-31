@@ -1,4 +1,4 @@
-#Version 1.4.2
+#Version 2.0.1
 
 from tkinter import *
 from threading import Thread
@@ -43,7 +43,7 @@ class Server(Thread):
 		while self.condition:
 			msg=""
 			try:
-				msg = self.main_co.recv(1024)
+				msg = self.main_co.recv(99999)
 			except ConnectionResetError:
 				self.chat_insert("[*]Deconnected To Server\n")
 				break
@@ -66,9 +66,10 @@ class Server(Thread):
 		msg = interface.msg_send.get()
 		if msg != '':
 			if self.confirm == True:
-				msg = self.pseudo + " > " + msg + "\n"
+				msg = msg + "\n"
 			else:
 				msg = hashlib.sha1(msg.encode()).hexdigest()
+				msg = msg + " " + self.pseudo
 				pass
 			self.main_co.send(msg.encode())
 			interface.msg_send.delete(0, END)
