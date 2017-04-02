@@ -73,8 +73,21 @@ class soclet(Thread):
 					else:
 						if msg != "":
 							msg_split = msg.split(" ")
+							#--------------COMMANDS---------------#
 							if msg_split[0]=="/pseudo" :
 								self.pseudo[att] = msg_split[1]
+							elif msg_split[0] == "/who":
+								msg = ""
+								for co in self.client_co:
+									msg = msg + self.pseudo[co] + "/ "
+								msg = "[*]Who > " + msg + "\n"
+								att.send(msg.encode())
+							elif msg_split[0]=="/quit":
+								msg = "[*]" + self.pseudo[att] + " Is Disconect"
+								del self.pseudo[att]
+								self.client_co.remove(att)
+								self.send_msg_all(msg.encode())
+								print(msg)
 							else:
 								msg = self.pseudo[att] + " > " + msg + "\n"
 								self.send_msg_all(msg.encode())
