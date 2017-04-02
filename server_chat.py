@@ -1,4 +1,4 @@
-#Version 2.0.1
+#Version 2.1.1
 
 
 import select
@@ -62,18 +62,22 @@ class soclet(Thread):
 				pass
 			else:
 				for att in atts:
+					msg=""
 					try:
 						msg = att.recv(1024)
 						msg = msg.decode()
 					except ConnectionResetError:
 						pass
+					except:
+						pass
 					else:
-						msg_split = msg.split(" ")
-						if msg_split[0]=="/pseudo" :
-							self.pseudo[att] = msg_split[1]
-						else:
-							msg = self.pseudo[att] + " > " + msg + "\n"
-							self.send_msg_all(msg.encode())
+						if msg != "":
+							msg_split = msg.split(" ")
+							if msg_split[0]=="/pseudo" :
+								self.pseudo[att] = msg_split[1]
+							else:
+								msg = self.pseudo[att] + " > " + msg + "\n"
+								self.send_msg_all(msg.encode())
 
 	def send_msg(self, recver, msg_asend):
 		try:
@@ -87,7 +91,10 @@ class soclet(Thread):
 			try:
 				co.send(msg_all)
 			except ConnectionResetError:
+				msg = "[*]" + self.pseudo[self.client_co[i]] + " Is Disconect"
 				del self.client_co[i]
+				self.send_msg_all(mdg.encode())
+				print(msg)
 			except:
 				pass
 			i = i + 1
