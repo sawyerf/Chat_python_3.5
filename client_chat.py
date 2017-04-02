@@ -18,7 +18,6 @@ class Server(Thread):
 		self.condition=True	
 
 	def run(self):
-		profil.join()
 		while self.condition:
 			try:
 				self.main_co = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -77,12 +76,6 @@ class Server(Thread):
 				pass
 			self.main_co.send(msg.encode())
 			interface.msg_send.delete(0, END)
-				
-	def confirm_profil(self, enter=""):
-		self.host = profil.ip_entry.get()
-		self.pseudo = profil.pseudo_entry.get()
-		if self.host!="" and self.pseudo!="":
-			profil.main_profil.destroy()
 	
 	def chat_insert(self, msg):
 		interface.chat.configure(state=NORMAL)
@@ -90,28 +83,6 @@ class Server(Thread):
 		interface.chat.tag_config("alae", foreground="#FF8000")
 		interface.chat.configure(state=DISABLED)
 	
-class Profil(Thread):
-	def __init__(self):
-		Thread.__init__(self)
-		
-	def run(self):
-		#-----------------GRAPHIC INTERFACE---------------------#
-		self.main_profil = Tk()
-		self.ip_label = Label(self.main_profil, text="Ip Server:")
-		self.ip_entry = Entry(self.main_profil, width=34)
-		self.pseudo_label = Label(self.main_profil, text="Pseudo:")
-		self.pseudo_entry = Entry(self.main_profil, width=34)
-		self.valid_button = Button(self.main_profil, text="Confirm", command=server.confirm_profil, width=11)
-		self.cancel_button = Button(self.main_profil, text="Cancel", command=self.main_profil.quit, width=11)
-		self.main_profil.bind("<Return>", server.confirm_profil)
-		#--------------------------PACK-------------------------#
-		self.ip_label.pack(side=TOP)
-		self.ip_entry.pack(side=TOP, padx=15)
-		self.pseudo_label.pack(side=TOP)
-		self.pseudo_entry.pack(side=TOP, padx=15)
-		self.valid_button.pack(side=RIGHT, padx=15, pady=5)
-		self.cancel_button.pack(side=LEFT, padx=15, pady=5)
-		self.main_profil.mainloop()
 
 class Interface(Thread):
 	def __init__(self):
@@ -143,12 +114,33 @@ class Interface(Thread):
 		server.condition=False
 		sys.exit(0)
 
-	
+def Profil():
+	#-----------------GRAPHIC INTERFACE---------------------#
+	main_profil = Tk()
+	ip_label = Label(main_profil, text="Ip Server:")
+	ip_entry = Entry(main_profil, width=34)
+	pseudo_label = Label(main_profil, text="Pseudo:")
+	pseudo_entry = Entry(main_profil, width=34)
+	valid_button = Button(main_profil, text="Confirm", command=lambda: confirm_profil("", main_profil, ip_entry.get(), pseudo_entry.get()), width=11)
+	cancel_button = Button(main_profil, text="Cancel", command=main_profil.destroy, width=11)
+	main_profil.bind("<Return>", lambda eff: confirm_profil(eff, main_profil, ip_entry.get(), pseudo_entry.get()))
+	#--------------------------PACK-------------------------#
+	ip_label.pack(side=TOP)
+	ip_entry.pack(side=TOP, padx=15)
+	pseudo_label.pack(side=TOP)
+	pseudo_entry.pack(side=TOP, padx=15)
+	valid_button.pack(side=RIGHT, padx=15, pady=5)
+	cancel_button.pack(side=LEFT, padx=15, pady=5)
+	main_profil.mainloop()
+
+def confirm_profil(enter, main_profil, ip, pseudo):
+	server.host = ip
+	server.pseudo = pseudo
+	if server.host!="" and server.pseudo!="":
+		main_profil.destroy()
 
 server = Server()
-profil = Profil()
 interface = Interface()
 
-profil.start()
-profil.join()
+Profil()
 interface.start()
