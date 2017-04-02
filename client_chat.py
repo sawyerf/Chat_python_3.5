@@ -1,4 +1,4 @@
-#Version 2.0.1
+#Version 2.1.0
 
 from tkinter import *
 from threading import Thread
@@ -23,7 +23,7 @@ class Server(Thread):
 			try:
 				self.main_co = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				self.main_co.connect((self.host, self.port))
-				self.main_co.settimeout(5)
+				self.main_co.settimeout(0.5)
 			except ConnectionRefusedError:
 				if self.one_error == True:
 					self.chat_insert("[*]No Server\n")
@@ -55,7 +55,7 @@ class Server(Thread):
 			else:
 				if msg != "":
 					msg = msg.decode()
-					if msg == "[*]Confirm\n":
+					if "[*]Confirm\n" in msg:
 						self.confirm = True
 					self.chat_insert(msg)
 					interface.chat.see("end")
@@ -83,6 +83,7 @@ class Server(Thread):
 	def chat_insert(self, msg):
 		interface.chat.configure(state=NORMAL)
 		interface.chat.insert(END, msg)
+		interface.chat.tag_config("alae", foreground="#FF8000")
 		interface.chat.configure(state=DISABLED)
 	
 class Profil(Thread):
@@ -115,10 +116,10 @@ class Interface(Thread):
 	def run(self):
 		#------------------------------GRAPHIC INTERFACE-----------------------------#
 		self.main = Tk()
+		#self.main.geometry("750x500")
 		self.chat = Text(self.main, state=NORMAL)
 		self.msg_send = Entry(self.main, width=92)
-		self.send = Button(self.main, text="Send", command=server.recup_msg, width=10, height=1)
-		self.scrollbar = Scrollbar(self.main, command=self.chat.yview, cursor="heart")
+		self.scrollbar = Scrollbar(self.main, command=self.chat.yview)
 		self.msg_send.bind("<Return>", server.recup_msg)
 		#-----------------------------MENUBAR-----------------------------#
 		self.menubar = Menu(self.main)
@@ -128,10 +129,9 @@ class Interface(Thread):
 		self.menubar.add_cascade(label="Main", menu=self.menu1)
 		self.main.config(menu=self.menubar)
 		#-----------------------------PACK-----------------------------#
+		self.msg_send.pack(side=BOTTOM, padx=5, pady=2, fill=X)
 		self.scrollbar.pack(side=RIGHT,fill=Y)
-		self.chat.pack(side=TOP, padx=5, pady=1)
-		self.msg_send.pack(side=LEFT, padx=5, pady=1)
-		self.send.pack(side=RIGHT, padx=5, pady=1)
+		self.chat.pack(side=TOP, padx=5, pady=2, fill=BOTH, expand=1)
 		self.chat.configure(state=DISABLED)
 
 		server.start()
