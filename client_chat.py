@@ -1,4 +1,4 @@
-#Version 2.1.1
+#Version 2.1.0
 
 from tkinter import *
 from threading import Thread
@@ -50,6 +50,9 @@ class Server(Thread):
 			except ConnectionAbortedError:
 				self.chat_insert("[*]Deconnected To Server\n")
 				break
+			except BrokenPipeError:
+				self.chat_insert("[*]Deconnected To Server\n")
+				break
 			except:
 				pass
 			else:
@@ -59,6 +62,7 @@ class Server(Thread):
 						self.confirm = True
 					self.chat_insert(msg)
 					interface.chat.see("end")
+		self.main_co.send(b"/quit")
 		self.main_co.close()
 
 
