@@ -1,5 +1,6 @@
-#Version 2.1.2
-vesion = "2.1.2"
+#Ve
+rsion 2.1.1
+version = "2.1.1"
 
 import select
 import socket
@@ -90,9 +91,9 @@ class soclet(Thread):
 								try:
 									self.pseudo[att] = msg_split[1]
 								except:
-									att.send(b"[*]Your New Nickname Dosn't Work")
+									att.send(b"[*]Your New Nickname Dosn't Work\n")
 							elif msg_split[0]=="/version":
-								msg = "[*]Version " + version
+								msg = "[*]Version " + version + "\n"
 								att.send(msg.encode())
 							elif msg_split[0] == "/who":
 								msg = ""
@@ -104,16 +105,16 @@ class soclet(Thread):
 								if self.rang[att] == "modo":
 									for ps in self.pseudo:
 										if self.pseudo[ps]==msg_split[1]:
-											msg = "[*]" + self.pseudo[ps] + " Is Kick"
+											msg = "[*]" + self.pseudo[ps] + " Is Kick\n"
 											self.send_msg_all(msg.encode())
 											self.client_co.remove(ps)
 											del self.pseudo[ps]
 											break
 								else:
-									att.send(b"[*]Your Are Not Modo")
+									att.send(b"[*]Your Are Not Modo\n")
 
 							elif msg_split[0]=="/quit":
-								msg = "[*]" + self.pseudo[att] + " Is Disconect"
+								msg = "[*]" + self.pseudo[att] + " Is Disconect\n"
 								self.send_msg_all(msg.encode())
 								del self.pseudo[att]
 								self.client_co.remove(att)
