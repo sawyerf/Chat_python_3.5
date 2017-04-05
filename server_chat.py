@@ -1,5 +1,5 @@
-#Version 2.1.2
-vesion = "2.1.2"
+#Version 2.1.1
+vesion = "2.1.1"
 
 import select
 import socket
@@ -109,6 +109,8 @@ class soclet(Thread):
 											self.client_co.remove(ps)
 											del self.pseudo[ps]
 											break
+								else:
+									att.send(b"[*]Your Are Not Modo")
 
 							elif msg_split[0]=="/quit":
 								msg = "[*]" + self.pseudo[att] + " Is Disconect"
