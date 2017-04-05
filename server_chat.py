@@ -1,5 +1,5 @@
-#Version 2.1.1
-vesion = "2.1.1"
+#Version 2.1.2
+vesion = "2.1.2"
 
 import select
 import socket
