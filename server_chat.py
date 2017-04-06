@@ -1,6 +1,5 @@
-#Ve
-rsion 2.1.1
-version = "2.1.1"
+#Version 2.1.2
+version = "2.1.2"
 
 import select
 import socket
@@ -104,12 +103,16 @@ class soclet(Thread):
 							elif msg_split[0]=="/kick":
 								if self.rang[att] == "modo":
 									for ps in self.pseudo:
-										if self.pseudo[ps]==msg_split[1]:
-											msg = "[*]" + self.pseudo[ps] + " Is Kick\n"
-											self.send_msg_all(msg.encode())
-											self.client_co.remove(ps)
-											del self.pseudo[ps]
-											break
+										try:
+											if self.pseudo[ps]==msg_split[1]:
+												msg = "[*]" + self.pseudo[ps] + " Is Kick\n"
+												self.send_msg_all(msg.encode())
+												self.client_co.remove(ps)
+												del self.pseudo[ps]
+												break
+											except:
+												att.send("[*]:O")
+
 								else:
 									att.send(b"[*]Your Are Not Modo\n")
 
