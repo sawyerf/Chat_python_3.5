@@ -1,5 +1,5 @@
-#Version 2.1.2
-version = "2.1.2"
+#Version 2.2.0
+version = "2.2.0"
 
 import select
 import socket
@@ -47,6 +47,10 @@ class soclet(Thread):
 							mdp = mdp.decode()
 							mdp_split = mdp.split(" ")
 							if mdp_split[0] == self.mdp:
+								nombre = len(mdp_split[1])
+								while nombre<=12:
+									mdp_split[1] += " "
+									nombre = len(mdp_split[1])
 								self.pseudo[asker_mdp] = mdp_split[1]
 								self.rang[asker_mdp] = "normal"
 								msg = "[*]" + self.pseudo[asker_mdp] + " Is Connected\n"
@@ -56,6 +60,10 @@ class soclet(Thread):
 								self.client_co.append(asker_mdp)
 								self.client_mdp.remove(asker_mdp)
 							elif mdp_split[0] == self.mdp_modo:
+								nombre = len(mdp_split[1])
+								while nombre<=12:
+									mdp_split[1] += " "
+									nombre = len(mdp_split[1])
 								self.pseudo[asker_mdp] = mdp_split[1]
 								self.rang[asker_mdp] = "modo"
 								msg = "[*]" + self.pseudo[asker_mdp] + " Is Connected\n"
@@ -86,9 +94,25 @@ class soclet(Thread):
 						if msg != "":
 							msg_split = msg.split(" ")
 							#--------------COMMANDS---------------#
-							if msg_split[0]=="/nick":
+							if msg_split[0]=="/help":
+								msg = """[*]The Commands is :
+   /help 				For known all the commands
+   /nick + YourName				For change your nick name
+   /version 				For know the version of the server
+   /who 				For know who is connect on the server
+   /kick + Bitch 				For kick a fucking bitch
+   /quit 				For quit the server where you are\n"""
+								att.send(msg.encode())
+							elif msg_split[0]=="/nick":
 								try:
-									self.pseudo[att] = msg_split[1]
+									if len(msg_split[1]) <= 12:
+										nombre = len(msg_split[1])
+										while nombre<=12:
+											msg_split[1] += " "
+											nombre = len(msg_split[1])
+										self.pseudo[att] = msg_split[1]
+									else:
+										att.send(b"[*]Your New Nickname Must Do 12 Caractere")
 								except:
 									att.send(b"[*]Your New Nickname Dosn't Work\n")
 							elif msg_split[0]=="/version":
@@ -110,12 +134,10 @@ class soclet(Thread):
 												self.client_co.remove(ps)
 												del self.pseudo[ps]
 												break
-											except:
-												att.send("[*]:O")
-
+										except:
+											att.send(b"[*]:O\n")
 								else:
 									att.send(b"[*]Your Are Not Modo\n")
-
 							elif msg_split[0]=="/quit":
 								msg = "[*]" + self.pseudo[att] + " Is Disconect\n"
 								self.send_msg_all(msg.encode())
