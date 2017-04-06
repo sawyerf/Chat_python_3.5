@@ -1,4 +1,4 @@
-#Version 2.1.1
+#Version 2.2.0
 
 from tkinter import *
 from threading import Thread
@@ -136,7 +136,7 @@ def Profil():
 def confirm_profil(enter, main_profil, ip, pseudo):
 	server.host = ip
 	server.pseudo = pseudo
-	if server.host!="" and server.pseudo!="":
+	if server.host!="" and server.pseudo!="" and len(pseudo)<12:
 		main_profil.destroy()
 
 server = Server()
