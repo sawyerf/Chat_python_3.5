@@ -1,5 +1,5 @@
-#Version 2.2.0
-version = "2.2.0"
+#Version 2.2.3
+version = "2.2.3"
 
 import select
 import socket
@@ -46,26 +46,18 @@ class soclet(Thread):
 						if mdp != "":
 							mdp = mdp.decode()
 							mdp_split = mdp.split(" ")
-							if mdp_split[0] == self.mdp:
+							if mdp_split[0]==self.mdp or mdp_split[1]==self.mdp_modo:
 								nombre = len(mdp_split[1])
-								while nombre<=12:
+								while nombre<10:
 									mdp_split[1] += " "
 									nombre = len(mdp_split[1])
 								self.pseudo[asker_mdp] = mdp_split[1]
-								self.rang[asker_mdp] = "normal"
-								msg = "[*]" + self.pseudo[asker_mdp] + " Is Connected\n"
-								self.send_msg_all(msg.encode())
-								self.send_msg(asker_mdp, b"[*]Confirm\n")
-								self.send_msg(asker_mdp, b"[*]Welcome To The Server\n")
-								self.client_co.append(asker_mdp)
-								self.client_mdp.remove(asker_mdp)
-							elif mdp_split[0] == self.mdp_modo:
-								nombre = len(mdp_split[1])
-								while nombre<=12:
-									mdp_split[1] += " "
-									nombre = len(mdp_split[1])
-								self.pseudo[asker_mdp] = mdp_split[1]
-								self.rang[asker_mdp] = "modo"
+								#------------CHOOSE-RANG---------------#
+								if mdp_split[0]==self.mdp:
+									self.rang[asker_mdp] = "normal"
+								elif mdp_split[0]==self.mdp_modo:
+									self.rang[asker_mdp] = "modo"
+								#----------END-CHOOSE-RANG------------#
 								msg = "[*]" + self.pseudo[asker_mdp] + " Is Connected\n"
 								self.send_msg_all(msg.encode())
 								self.send_msg(asker_mdp, b"[*]Confirm\n")
@@ -105,14 +97,15 @@ class soclet(Thread):
 								att.send(msg.encode())
 							elif msg_split[0]=="/nick":
 								try:
-									if len(msg_split[1]) <= 12:
+									if len(msg_split[1])<=10:
 										nombre = len(msg_split[1])
-										while nombre<=12:
+										while nombre<10:
 											msg_split[1] += " "
 											nombre = len(msg_split[1])
+											print(nombre)
 										self.pseudo[att] = msg_split[1]
 									else:
-										att.send(b"[*]Your New Nickname Must Do 12 Caractere")
+										att.send(b"[*]Your New Nickname Must Do Less 10 Caractere\n")
 								except:
 									att.send(b"[*]Your New Nickname Dosn't Work\n")
 							elif msg_split[0]=="/version":
