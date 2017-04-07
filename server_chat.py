@@ -102,7 +102,6 @@ class soclet(Thread):
 										while nombre<10:
 											msg_split[1] += " "
 											nombre = len(msg_split[1])
-											print(nombre)
 										self.pseudo[att] = msg_split[1]
 									else:
 										att.send(b"[*]Your New Nickname Must Do Less 10 Caractere\n")
