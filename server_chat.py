@@ -104,7 +104,7 @@ class soclet(Thread):
 											nombre = len(msg_split[1])
 										self.pseudo[att] = msg_split[1]
 									else:
-										att.send(b"[*]Your New Nickname Must Do Less 10 Caractere\n")
+										att.send(b"[*]Your New Nickname Must Do Less 10 Caracteres\n")
 								except:
 									att.send(b"[*]Your New Nickname Dosn't Work\n")
 							elif msg_split[0]=="/version":
