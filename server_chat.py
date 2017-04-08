@@ -22,6 +22,7 @@ class soclet(Thread):
 		self.main_co.bind((self.host, self.port))
 		self.main_co.listen(-1)
 		ask_mdp = []
+		only_name = []
 		while True:
 			#--------------------ASK CONNECT--------------------------#
 			asks, wlist, rlist = select.select([self.main_co], [], [], 0)
@@ -94,7 +95,7 @@ class soclet(Thread):
    /who 				For know who is connect on the server
    /kick + Bitch 				For kick a fucking bitch
    /quit 				For quit the server where you are\n"""
-								att.send(msg.encode())
+								self.send_msg(att, msg.encode())
 							elif msg_split[0]=="/nick":
 								try:
 									if len(msg_split[1])<=10:
@@ -104,32 +105,33 @@ class soclet(Thread):
 											nombre = len(msg_split[1])
 										self.pseudo[att] = msg_split[1]
 									else:
-										att.send(b"[*]Your New Nickname Must Do Less 10 Caracteres\n")
+										self.send_msg(att, b"[*]Your New Nickname Must Do Less 10 Caracteres\n")
 								except:
-									att.send(b"[*]Your New Nickname Dosn't Work\n")
+									self.send_msg(att, b"[*]Your New Nickname Dosn't Work\n")
 							elif msg_split[0]=="/version":
 								msg = "[*]Version " + version + "\n"
-								att.send(msg.encode())
+								self.send_msg(att, msg.encode())
 							elif msg_split[0] == "/who":
 								msg = ""
 								for co in self.client_co:
 									msg = msg + self.pseudo[co] + "/ "
 								msg = "[*]Who > " + msg + "\n"
-								att.send(msg.encode())
+								self.send_msg(att, msg.encode())
 							elif msg_split[0]=="/kick":
 								if self.rang[att] == "modo":
 									for ps in self.pseudo:
+										only_name = self.pseudo[ps].split(" ")
 										try:
-											if self.pseudo[ps]==msg_split[1]:
+											if only_name[0]==msg_split[1]:
 												msg = "[*]" + self.pseudo[ps] + " Is Kick\n"
 												self.send_msg_all(msg.encode())
 												self.client_co.remove(ps)
 												del self.pseudo[ps]
 												break
 										except:
-											att.send(b"[*]:O\n")
+											self.send_msg(att, b"[*]:O\n")
 								else:
-									att.send(b"[*]Your Are Not Modo\n")
+									self.send_msg(att, b"[*]Your Are Not Modo\n")
 							elif msg_split[0]=="/quit":
 								msg = "[*]" + self.pseudo[att] + " Is Disconect\n"
 								self.send_msg_all(msg.encode())
