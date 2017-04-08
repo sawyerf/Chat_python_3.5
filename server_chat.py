@@ -155,6 +155,7 @@ class soclet(Thread):
 				co.send(msg_all)
 			except ConnectionResetError:
 				msg = "[*]" + self.pseudo[self.client_co[i]] + " Is Disconect"
+				self.pseudo.remove(self.client[i])
 				del self.client_co[i]
 				self.send_msg_all(mdg.encode())
 				print(msg)
