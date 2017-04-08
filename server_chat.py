@@ -46,7 +46,7 @@ class soclet(Thread):
 						if mdp != "":
 							mdp = mdp.decode()
 							mdp_split = mdp.split(" ")
-							if mdp_split[0]==self.mdp or mdp_split[1]==self.mdp_modo:
+							if mdp_split[0]==self.mdp or mdp_split[0]==self.mdp_modo:
 								nombre = len(mdp_split[1])
 								while nombre<10:
 									mdp_split[1] += " "
