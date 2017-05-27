@@ -89,12 +89,12 @@ class soclet(Thread):
 							#--------------COMMANDS---------------#
 							if msg_split[0]=="/help":
 								msg = """[*]The Commands is :
-   /help 				For known all the commands
-   /nick + YourName				For change your nick name
-   /version 				For know the version of the server
-   /who 				For know who is connect on the server
-   /kick + Bitch 				For kick a fucking bitch
-   /quit 				For quit the server where you are\n"""
+   /help 				To known all the commands
+   /nick + YourName				To change your nick name
+   /version 				To know the version of the server
+   /who 				To know who is connect on the server
+   /kick + Bitch 				To kick a fucking bitch
+   /quit 				To quit the server where you are\n"""
 								self.send_msg(att, msg.encode())
 							elif msg_split[0]=="/nick":
 								try:
