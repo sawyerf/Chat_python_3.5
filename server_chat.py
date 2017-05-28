@@ -49,6 +49,8 @@ class soclet(Thread):
 							mdp_split = mdp.split(" ")
 							if mdp_split[0]==self.mdp or mdp_split[0]==self.mdp_modo:
 								nombre = len(mdp_split[1])
+								if nombre>10:
+									mdp_split[1] = "Anonymous"
 								while nombre<10:
 									mdp_split[1] += " "
 									nombre = len(mdp_split[1])
